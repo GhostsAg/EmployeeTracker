@@ -1,10 +1,10 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-const myPassword = require("../sql_creds/sqlcred"); // Local sql Workbench password.
+const myPassword = require("../sql_creds/sqlcred");
 
 const connection = mysql.createConnection({
     host: "localhost",
-    port: "3036",
+    port: "3306",
     user: "root",
     password: `${myPassword}`,
     database: "internal_db"

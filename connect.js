@@ -48,7 +48,7 @@ function insertHandle(table, ...inputVal) {
             connection.query(`INSERT INTO ${table} (dept_name) VALUES ("${inputVal}")`,
             (err, res) => {
                 if (err) throw err;
-                console.log(`${inputVal} added to ${table}`);
+                console.log(`Changes made succesfully to ${table} table.`);
                 selectAct();
             });
             break;
@@ -56,8 +56,8 @@ function insertHandle(table, ...inputVal) {
             parseNums(inputVal);
             connection.query(`INSERT INTO ${table} (title, salary, department) VALUES (${inputVal})`,
             (err, res) => {
-                if (err) {console.log(typeof inputVal[1]); throw err;}
-                console.log(`${inputVal} added to ${table}`);
+                if (err) throw err;
+                console.log(`Changes made succesfully to ${table} table.`);
                 selectAct();
             });
             break;
@@ -65,7 +65,7 @@ function insertHandle(table, ...inputVal) {
             connection.query(`INSERT INTO ${table} (first_name, last_name, role_id, manager_id) VALUES ("${inputVal}", "${inputVal}", "${inputVal}", "${inputVal}")`,
             (err, res) => {
                 if (err) throw err;
-                console.log(`${inputVal} added to ${table}`);
+                console.log(`Changes made succesfully to ${table} table.`);
                 selectAct();
             });
             break;

@@ -1,7 +1,7 @@
 
 function parseNums(array) {
     array.forEach( (val, index) => {
-        array[index].trim();
+        array[index].trim();    // fix .trim() not a function
         if ( isNaN(parseFloat(val)) === true) {
             return;
         }else {

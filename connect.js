@@ -147,7 +147,7 @@ function handleEmp() {
             message: "Input employee role ID.",
             validate: function(input) {
                 let done = this.async();
-                validNum(input, "role ID", done);
+                validRoleId(input, done);
             }
         },
         {
@@ -211,6 +211,20 @@ function validDpt(input, done) {
             check.length === 0 ? done(null, true) : done("Department already exists.", false);
         } else {
             done("Department name invalid.", false);
+        }
+    });
+}
+
+function validRoleId(input, done) {
+    connection.query(`SELECT role_id FROM employee`,
+    (err, res) => {
+        if (err) {
+            throw err;
+        } else if (isNaN(parseInt(input)) === false) {
+            let check = res.filter( (el) => el.role_id === input);
+            check.length === 0 ? done(null, true) : done("Role ID already exists.", false);
+        } else {
+            done("Invalid role ID number.", false);
         }
     });
 }

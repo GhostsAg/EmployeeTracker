@@ -43,13 +43,13 @@ function selectAct() {
                 handleEmp();
                 break;
             case "View Departments":
-                viewDpts();
+                views("department");
                 break;
             case "View Roles":
-                viewRoles();
+                views("emp_role");
                 break;
             case "View Employees":
-                viewEmploys();
+                views("employee");
                 break;
             default:
                 console.log("error");
@@ -274,4 +274,31 @@ function viewEmploys() {
     setTimeout( () => {
         selectAct();
     }, 2500);
+}
+function viewHandle(table) {
+    connection.query(`SELECT * FROM ${table}`, 
+    (err, res) => {
+        if (err) throw err;
+        console.table(res);
+    });
+    setTimeout( () => {
+        selectAct();
+    }, 2500);
+}
+
+function views(table) {
+    switch(table) {
+        case "department":
+            viewHandle(table);
+            break;
+        case "emp_role":
+            viewHandle(table);
+            break;
+        case "employee":
+            viewHandle(table);
+            break;
+        default:
+            console.log("Error pulling up talbe.");
+            break;
+    }
 }

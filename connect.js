@@ -29,6 +29,7 @@ function selectAct() {
                 "View Departments",
                 "View Roles",
                 "View Employees",
+                "View All",
                 "Update Employee Role"
             ]
         }
@@ -51,6 +52,9 @@ function selectAct() {
                 break;
             case "View Employees":
                 views("employee");
+                break;
+            case "View All":
+                views("All");
                 break;
             case "Update Employee Role":
                 updateEmpRole();
@@ -260,8 +264,8 @@ const getDepts = () => {
     return choices;
 }
 
-function viewDpts() {
-    connection.query("SELECT * FROM (department LEFT JOIN emp_role ON department.dept_name = emp_role.department) LEFT JOIN employee ON emp_role.id = employee.role_id", 
+function viewAll() {
+    connection.query("SELECT * FROM (department RIGHT JOIN emp_role ON department.dept_name = emp_role.department) RIGHT JOIN employee ON emp_role.id = employee.role_id", 
     (err, res) => {
         if (err) throw err;
         console.table(res);
@@ -271,19 +275,8 @@ function viewDpts() {
     }, 2500);
 }
 
-function viewRoles() {
-    connection.query("SELECT * FROM emp_role LEFT JOIN employee ON emp_role.id = employee.role_id", 
-    (err, res) => {
-        if (err) throw err;
-        console.table(res);
-    });
-    setTimeout( () => {
-        selectAct();
-    }, 2500);
-}
-
-function viewEmploys() {
-    connection.query("SELECT * FROM employee LEFT JOIN emp_role ON employee.role_id = emp_role.id", 
+function viewHandle(table) {
+    connection.query(`SELECT * FROM ${table}`, 
     (err, res) => {
         if (err) throw err;
         console.table(res);
@@ -296,16 +289,18 @@ function viewEmploys() {
 function views(table) {
     switch(table) {
         case "department":
-            viewDpts();
+            viewHandle(table);
             break;
         case "emp_role":
-            viewRoles();
+            viewHandle(table)
             break;
         case "employee":
-            viewEmploys();
+            viewHandle(table);
             break;
+        case "All":
+            viewAll();
         default:
-            console.log("Error pulling up talbe.");
+            console.log("Error pulling up table.");
             break;
     }
 }

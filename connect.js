@@ -28,7 +28,8 @@ function selectAct() {
                 "Add Employee",
                 "View Departments",
                 "View Roles",
-                "View Employees"
+                "View Employees",
+                "Update Employee Role"
             ]
         }
     ]).then( ( {action} ) => {
@@ -50,6 +51,9 @@ function selectAct() {
                 break;
             case "View Employees":
                 views("employee");
+                break;
+            case "Update Employee Role":
+                updateEmpRole();
                 break;
             default:
                 console.log("error");
@@ -215,9 +219,23 @@ function validRoleId(input, done) {
             throw err;
         } else if (isNaN(parseInt(input)) === false) {
             let check = res.filter( (el) => el.id === parseInt(input));
-            check.length === 0 ? done("Role ID invalid, Please make a role for that ID.", false) : done(null, true);
+            check.length === 0 ? done("Role ID invalid, please make a role for that ID.", false) : done(null, true);
         } else {
             done("Invalid role ID number.", false);
+        }
+    });
+}
+
+function validEmpId(input, done) {
+    connection.query(`SELECT id FROM employee`,
+    (err, res) => {
+        if (err) {
+            throw err;
+        } else if (isNaN(parseInt(input)) === false) {
+            let check = res.filter( (el) => el.id === parseInt(input));
+            check.length === 0 ? done("Employee ID invalid, no employee with that ID.", false) : done(null, true);
+        } else {
+            done("Invalid employee ID number.", false);
         }
     });
 }
@@ -290,4 +308,36 @@ function views(table) {
             console.log("Error pulling up talbe.");
             break;
     }
+}
+
+function updateEmpRole() {
+    inquirer.prompt([
+        {
+            name: "id",
+            message: "Input the employee ID.",
+            validate: function(input) {
+                let done = this.async();
+                validEmpId(input, done);
+            }
+        },
+        {
+            name: "roleId",
+            message: "Input the new role ID.",
+            validate: function(input) {
+                let done = this.async();
+                validRoleId(input, done);
+            }
+        }
+    ]).then( ({ id, roleId }) => {
+        let inputVal = [roleId, id];
+        filterData(inputVal);
+        connection.query(`UPDATE employee SET role_id = ? WHERE id = ?`, inputVal,
+        (err) => {
+            if (err) throw err;
+            console.log("Update successful.");
+            setTimeout( () => {
+                selectAct()
+            }, 2500);
+        });
+    });
 }

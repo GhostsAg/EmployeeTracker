@@ -299,6 +299,7 @@ function views(table) {
             break;
         case "All":
             viewAll();
+            break;
         default:
             console.log("Error pulling up table.");
             break;

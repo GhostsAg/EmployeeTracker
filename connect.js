@@ -25,7 +25,10 @@ function selectAct() {
             choices: [
                 "Add Department",
                 "Add Employee Role",
-                "Add Employee"
+                "Add Employee",
+                "View Departments",
+                "View Roles",
+                "View Employees"
             ]
         }
     ]).then( ( {action} ) => {
@@ -39,8 +42,18 @@ function selectAct() {
             case "Add Employee":
                 handleEmp();
                 break;
+            case "View Departments":
+                viewDpts();
+                break;
+            case "View Roles":
+                viewRoles();
+                break;
+            case "View Employees":
+                viewEmploys();
+                break;
             default:
                 console.log("error");
+                break;
         }
     });
 }
@@ -227,4 +240,38 @@ function validRoleId(input, done) {
             done("Invalid role ID number.", false);
         }
     });
+}
+
+// @@todo dept leftjoin employee @@@$%$%$ HOW TO JOIN!!
+function viewDpts() {
+    connection.query("SELECT * FROM department", 
+    (err, res) => {
+        if (err) throw err;
+        console.table(res);
+    });
+    setTimeout( () => {
+        selectAct();
+    }, 2500);
+}
+
+function viewRoles() {
+    connection.query("SELECT * FROM emp_role", 
+    (err, res) => {
+        if (err) throw err;
+        console.table(res);
+    });
+    setTimeout( () => {
+        selectAct();
+    }, 2500);
+}
+
+function viewEmploys() {
+    connection.query("SELECT * FROM employee", 
+    (err, res) => {
+        if (err) throw err;
+        console.table(res);
+    });
+    setTimeout( () => {
+        selectAct();
+    }, 2500);
 }

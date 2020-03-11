@@ -79,7 +79,11 @@ function handleDept() {
     inquirer.prompt([
         {
             name: "inputVal",
-            message: "Type in the name of the department you would like to add."
+            message: "Type in the name of the department you would like to add.",
+            validate: function(input) {
+                let done = this.async();
+                validDpt(input, done);
+            }
         }
     ]).then( ({ inputVal }) => {
         insertHandle("department", inputVal);
@@ -90,15 +94,25 @@ function handleRole() {
     inquirer.prompt([
         {
             name: "title",
-            message: "Type in the title of the employee you would like to add."
+            message: "Type in the title of the employee you would like to add.",
+            validate: function(input) {
+                let done = this.async();
+                validStr(input, "employee title", done);
+            }
         },
         {
             name: "salary",
-            message: "Type in the employee salary."
+            message: "Type in the employee salary.",
+            validate: function(input) {
+                let done = this.async();
+                validNum(input, "salary", done);
+            }
         },
         {
+            type: "list",
             name: "department",
-            message: "To what department does this employee belong?"
+            message: "To what department does this employee belong?",
+            choices: getDepts()
         }
     ]).then( ({ title, salary, department }) => {
         let inputVal = [title, salary, department];
@@ -112,6 +126,40 @@ function parseNums(array) {
             return;
         }else {
             array[index] = parseFloat(val);
+        }
+    });
+}
+
+function validStr(input, name, done) {
+    isNaN(parseInt(input)) === true ? done(null, true) : done(`Please enter a valid ${name}.`, false);  
+}
+
+function validNum(input, name, done) {
+    isNaN(parseInt(input)) === false ? done(null, true) : done(`Please enter a valid ${name} number.`, false);
+}
+
+const getDepts = () => {
+    const choices = new Array();
+    connection.query("SELECT dept_name FROM department",
+    (err, res) => {
+        if (err) throw err;
+        res.forEach( (el) => {
+            choices.push(el.dept_name);
+        })
+    });
+    return choices;
+}
+
+function validDpt(input, done) {
+    connection.query(`SELECT dept_name FROM department`,
+    (err, res) => {
+        if (err) {
+            throw err;
+        } else if (isNaN(parseInt(input)) === true) {
+            let check = res.filter( (el) => el.dept_name === input);
+            check.length === 0 ? done(null, true) : done("Department already exists.", false);
+        } else {
+            done("Department name invalid.", false);
         }
     });
 }

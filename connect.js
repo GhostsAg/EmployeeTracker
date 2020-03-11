@@ -36,6 +36,9 @@ function selectAct() {
             case "Add Employee Role":
                 handleRole();
                 break;
+            case "Add Employee":
+                handleEmp();
+                break;
             default:
                 console.log("error");
         }
@@ -61,7 +64,7 @@ function insertHandle(table, ...inputVal) {
             });
             break;
         case "employee":
-            connection.query(`INSERT INTO ${table} (first_name, last_name, role_id, manager_id) VALUES ("${inputVal}", "${inputVal}", "${inputVal}", "${inputVal}")`,
+            connection.query(`INSERT INTO ${table} (first_name, last_name, role_id, manager_id) VALUES ("${inputVal[0]}", "${inputVal[1]}", ${inputVal[2]}, ${inputVal[3]})`,
             (err, res) => {
                 if (err) throw err;
                 console.log(`Changes made succesfully to ${table} table.`);
@@ -78,7 +81,7 @@ function handleDept() {
     inquirer.prompt([
         {
             name: "inputVal",
-            message: "Type in the name of the department you would like to add.",
+            message: "Input new department name.",
             validate: function(input) {
                 let done = this.async();
                 validDpt(input, done);
@@ -93,7 +96,7 @@ function handleRole() {
     inquirer.prompt([
         {
             name: "title",
-            message: "Type in the title of the employee you would like to add.",
+            message: "Input employee title.",
             validate: function(input) {
                 let done = this.async();
                 validStr(input, "employee title", done);
@@ -101,7 +104,7 @@ function handleRole() {
         },
         {
             name: "salary",
-            message: "Type in the employee salary.",
+            message: "Input employee salary.",
             validate: function(input) {
                 let done = this.async();
                 validNum(input, "salary", done);
@@ -110,7 +113,7 @@ function handleRole() {
         {
             type: "list",
             name: "department",
-            message: "To what department does this employee belong?",
+            message: "Choose department.",
             choices: getDepts()
         }
     ]).then( ({ title, salary, department }) => {
@@ -118,6 +121,47 @@ function handleRole() {
         // filter data
         filterData(inputVal);
         insertHandle("emp_role", ...inputVal);
+    });
+}
+
+function handleEmp() {
+    inquirer.prompt([
+        {
+            name: "firstName",
+            message: "Input employee first name.",
+            validate: function(input) {
+                let done = this.async();
+                validStr(input, "employee first name", done);
+            }
+        },
+        {
+            name: "lastName",
+            message: "Input employee last name.",
+            validate: function(input) {
+                let done = this.async();
+                validStr(input, "employee last name", done);
+            }
+        },
+        {
+            name: "roleId",
+            message: "Input employee role ID.",
+            validate: function(input) {
+                let done = this.async();
+                validNum(input, "role ID", done);
+            }
+        },
+        {
+            name: "managerId",
+            message: "Input manager ID.",
+            validate: function(input) {
+                let done = this.async();
+                validNum(input, "manager ID", done);
+            }
+        }
+    ]).then( ({ firstName, lastName, roleId, managerId }) => {
+        let inputVal = [firstName, lastName, roleId, managerId];
+        filterData(inputVal);
+        insertHandle("employee", ...inputVal);
     });
 }
 

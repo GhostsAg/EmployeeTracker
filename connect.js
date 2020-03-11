@@ -194,6 +194,34 @@ function parseNums(array) {
     }); 
 }
 
+function validDpt(input, done) {
+    connection.query(`SELECT dept_name FROM department`,
+    (err, res) => {
+        if (err) {
+            throw err;
+        } else if (isNaN(parseInt(input)) === true) {
+            let check = res.filter( (el) => el.dept_name === input);
+            check.length === 0 ? done(null, true) : done("Department already exists.", false);
+        } else {
+            done("Department name invalid.", false);
+        }
+    });
+}
+
+function validRoleId(input, done) {
+    connection.query(`SELECT id FROM emp_role`,
+    (err, res) => {
+        if (err) {
+            throw err;
+        } else if (isNaN(parseInt(input)) === false) {
+            let check = res.filter( (el) => el.id === parseInt(input));
+            check.length === 0 ? done("Role ID invalid, Please make a role for that ID.", false) : done(null, true);
+        } else {
+            done("Invalid role ID number.", false);
+        }
+    });
+}
+
 function validStr(input, name, done) {
     isNaN(parseInt(input)) === true ? done(null, true) : done(`Please enter a valid ${name}.`, false);  
 }
@@ -212,34 +240,6 @@ const getDepts = () => {
         })
     });
     return choices;
-}
-
-function validDpt(input, done) {
-    connection.query(`SELECT dept_name FROM department`,
-    (err, res) => {
-        if (err) {
-            throw err;
-        } else if (isNaN(parseInt(input)) === true) {
-            let check = res.filter( (el) => el.dept_name === input);
-            check.length === 0 ? done(null, true) : done("Department already exists.", false);
-        } else {
-            done("Department name invalid.", false);
-        }
-    });
-}
-
-function validRoleId(input, done) {
-    connection.query(`SELECT role_id FROM employee`,
-    (err, res) => {
-        if (err) {
-            throw err;
-        } else if (isNaN(parseInt(input)) === false) {
-            let check = res.filter( (el) => el.role_id === input);
-            check.length === 0 ? done(null, true) : done("Role ID already exists.", false);
-        } else {
-            done("Invalid role ID number.", false);
-        }
-    });
 }
 
 function viewDpts() {
@@ -291,5 +291,3 @@ function views(table) {
             break;
     }
 }
-
-//@@ todos alias dpt_name to Department Name ... validate role_id to valid emp_role.id

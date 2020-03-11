@@ -1,14 +1,13 @@
+let arr = ["one $ ", "  tw' o", "3", "fo,ur", "5600.0", "45,00,0"];
 
 function filterData(array) {
     const regex = /[^a-zA-Z0-9]+/g;
     array.forEach((val, index) => {
         array[index] = val.replace(regex,"");
-        parseNums(array);
     });
+    parseNums(array);
     return array;
 }
-
-let arr = ["one $ ", "  tw' o", "3", "fo,ur", "5600.0", "45,00,0"];
 
 function parseNums(array) {
     array.forEach((val, index) => {

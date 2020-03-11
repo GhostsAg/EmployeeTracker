@@ -53,8 +53,7 @@ function insertHandle(table, ...inputVal) {
             });
             break;
         case "emp_role":
-            parseNums(inputVal);
-            connection.query(`INSERT INTO ${table} (title, salary, department) VALUES (${inputVal})`,
+            connection.query(`INSERT INTO ${table} (title, salary, department) VALUES ("${inputVal[0]}", ${inputVal[1]}, "${inputVal[2]}")`,
             (err, res) => {
                 if (err) throw err;
                 console.log(`Changes made succesfully to ${table} table.`);
@@ -116,18 +115,26 @@ function handleRole() {
         }
     ]).then( ({ title, salary, department }) => {
         let inputVal = [title, salary, department];
+        // filter data
+        filterData(inputVal);
         insertHandle("emp_role", ...inputVal);
     });
 }
 
-function parseNums(array) {
-    array.forEach( (val, index) => {
-        if ( isNaN(parseFloat(val)) === true) {
-            return;
-        }else {
-            array[index] = parseFloat(val);
-        }
+function filterData(array) {
+    const regex = /[^a-zA-Z0-9]+/g;
+    array.forEach((val, index) => {
+        array[index] = val.replace(regex,"");
     });
+    parseNums(array);
+}
+
+function parseNums(array) {
+    array.forEach((val, index) => {
+        if ( isNaN(parseInt(val)) === false ) {
+            array[index] = parseInt(val);
+        }
+    }); 
 }
 
 function validStr(input, name, done) {

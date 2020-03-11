@@ -57,4 +57,15 @@ function printType(arr) {
 
 // console.log(arr.length);
 
+// function viewHandle(table) {
+//     connection.query(`SELECT * FROM ${table}`, 
+//     (err, res) => {
+//         if (err) throw err;
+//         console.table(res);
+//     });
+//     setTimeout( () => {
+//         selectAct();
+//     }, 2500);
+// }
+
 

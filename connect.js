@@ -242,9 +242,8 @@ function validRoleId(input, done) {
     });
 }
 
-// @@todo dept leftjoin employee @@@$%$%$ HOW TO JOIN!!
 function viewDpts() {
-    connection.query("SELECT * FROM department", 
+    connection.query("SELECT * FROM (department LEFT JOIN emp_role ON department.dept_name = emp_role.department) LEFT JOIN employee ON emp_role.id = employee.role_id", 
     (err, res) => {
         if (err) throw err;
         console.table(res);
@@ -255,7 +254,7 @@ function viewDpts() {
 }
 
 function viewRoles() {
-    connection.query("SELECT * FROM emp_role", 
+    connection.query("SELECT * FROM emp_role LEFT JOIN employee ON emp_role.id = employee.role_id", 
     (err, res) => {
         if (err) throw err;
         console.table(res);
@@ -266,17 +265,7 @@ function viewRoles() {
 }
 
 function viewEmploys() {
-    connection.query("SELECT * FROM employee", 
-    (err, res) => {
-        if (err) throw err;
-        console.table(res);
-    });
-    setTimeout( () => {
-        selectAct();
-    }, 2500);
-}
-function viewHandle(table) {
-    connection.query(`SELECT * FROM ${table}`, 
+    connection.query("SELECT * FROM employee LEFT JOIN emp_role ON employee.role_id = emp_role.id", 
     (err, res) => {
         if (err) throw err;
         console.table(res);
@@ -289,16 +278,18 @@ function viewHandle(table) {
 function views(table) {
     switch(table) {
         case "department":
-            viewHandle(table);
+            viewDpts();
             break;
         case "emp_role":
-            viewHandle(table);
+            viewRoles();
             break;
         case "employee":
-            viewHandle(table);
+            viewEmploys();
             break;
         default:
             console.log("Error pulling up talbe.");
             break;
     }
 }
+
+//@@ todos alias dpt_name to Department Name ... validate role_id to valid emp_role.id

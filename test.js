@@ -1,15 +1,35 @@
 
-// function parseNums(array) {
-//     array.forEach( (val, index) => {
-//         array[index].trim();    // fix .trim() not a function
-//         if ( isNaN(parseFloat(val)) === true) {
-//             return;
-//         }else {
-//             array[index] = parseFloat(val); // delete commas from val floats
-//         }
-//     });
-// }
+function filterData(array) {
+    const regex = /[^a-zA-Z0-9]+/g;
+    array.forEach((val, index) => {
+        array[index] = val.replace(regex,"");
+        parseNums(array);
+    });
+    return array;
+}
 
+let arr = ["one $ ", "  tw' o", "3", "fo,ur", "5600.0", "45,00,0"];
+
+function parseNums(array) {
+    array.forEach((val, index) => {
+        if ( isNaN(parseInt(val)) === false ) {
+            array[index] = parseInt(val);
+        }
+    }); 
+}
+
+//parseNums(arr);
+
+printType(arr);
+
+function printType(arr) {
+    filterData(arr);
+    for (let val of arr) {
+        console.log(typeof val, val);
+    }
+}
+
+// GETS LIST OF ALL VALUES IN A COLUMN
 
 // const getColList = (table, column) => {
 //     connection.query(`SELECT ${column} FROM ${table}`,
@@ -17,36 +37,25 @@
 //         if (err) throw err;
 //         const choices = new Array;
 //         res.forEach( (el) => {
-//             choices.push(el.column);
+//             choices.push(el.column); //@@columnName
 //         });
 //         console.log(choices);
 //         return choices;
 //     });
 // }
 
-//getColList("department", "dept_name");
+// getColList("department", "dept_name");
 
- let arr = ["one  ", "  two", 3, "four", "56000", "45,000"];
-
-// printType(arr);
-
-// function printType(arr) {
-//     parseNums(arr);
-//     for (let val of arr) {
-//         console.log(typeof val, val);
-//     }
+// function getColList(table, column) {
+//     connection.query(`SELECT ${column} FROM ${table}`,
+//     (err, res) => {
+//         if (err) throw err;
+//         console.log(res);
+//     })
 // }
 
-function getColList(table, column) {
-    connection.query(`SELECT ${column} FROM ${table}`,
-    (err, res) => {
-        if (err) throw err;
-        console.log(res);
-    })
-}
+// console.log(arr.filter( (el) => el === "four"));
 
-console.log(arr.filter( (el) => el === "four"));
-
-console.log(arr.length);
+// console.log(arr.length);
 
 

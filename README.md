@@ -14,10 +14,10 @@ Command-line application that allows you to input and manipulate employee data b
   
 * After creating a role you can now give this role to an employee by selecting "Add Employee" from the main menu.
 
-  * Input all of the employee data, first and last name, Note: Role ID must be the id of the an employee Role otherwise no employee can be created. Lastly input a Manager Id.
+  * Input all of the employee data, first and last names, Note: Role ID must be the id of an existing employee role otherwise no employee can be created. Lastly input a manager Id.
   
 * Once you have created all the table data to link in your database you can select "View All" from the main menu.
 * This should give you a view of all of the departments followed by employees and their roles and salaries.
 
 * If you are unsure of a role id you can go back and see all of the role id's by selecting "View Roles" from the
-*main menu.
+**main menu**.

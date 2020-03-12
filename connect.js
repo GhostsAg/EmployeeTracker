@@ -73,6 +73,7 @@ function insertHandle(table, ...inputVal) {
             (err, res) => {
                 if (err) throw err;
                 console.log(`Changes made succesfully to ${table} table.`);
+                initCap();
                 selectAct();
             });
             break;
@@ -182,6 +183,7 @@ function handleEmp() {
     ]).then( ({ firstName, lastName, roleId, managerId }) => {
         let inputVal = [firstName, lastName, roleId, managerId];
         filterData(inputVal);
+        lookUpDept(roleId, "+");
         insertHandle("employee", ...inputVal);
     });
 }
@@ -286,10 +288,21 @@ function viewHandle(table) {
     }, 2500);
 }
 
+function viewDpts() {
+    connection.query("SELECT * FROM department RIGHT JOIN capital ON department.id = capital.id", 
+    (err, res) => {
+        if (err) throw err;
+        console.table(res);
+    });
+    setTimeout( () => {
+        selectAct();
+    }, 2500);
+}
+
 function views(table) {
     switch(table) {
         case "department":
-            viewHandle(table);
+            viewDpts();
             break;
         case "emp_role":
             viewHandle(table)
@@ -325,6 +338,48 @@ function updateEmpRole() {
             }
         }
     ]).then( ({ id, roleId }) => {
+        handleRoleChange(id, roleId);
+    });
+}
+
+function initCap() {
+    let cap = 0;
+    connection.query(`INSERT INTO capital (expense) VALUES (${cap})`,
+    (err) => {
+        if (err) throw err;
+    });
+}
+
+function updateCapital(roleId, deptID, operator) {
+    connection.query(`SELECT salary FROM emp_role WHERE emp_role.id = ${roleId}`,
+    (err, res) => {
+        if (err) throw err;
+        connection.query(`UPDATE capital SET expense = expense ${operator} ${res[0].salary} WHERE id = ${deptID}`,
+        (err) => {
+            if (err) throw err;
+        });
+    });
+}
+
+function lookUpDept(roleId, operator) {
+    connection.query(`SELECT department FROM emp_role WHERE emp_role.id = ${roleId}`,
+    (err, res) => {
+        if (err) throw err;
+        connection.query(`SELECT id FROM department WHERE department.dept_name = "${res[0].department}"`,
+        (error, result) => {
+            if (error) throw error;
+            const deptID = result[0].id;
+            updateCapital(roleId, deptID, operator);
+        });
+    });
+}
+
+function handleRoleChange(id, roleId) {
+    lookUpDept(roleId, "+");
+    connection.query(`SELECT role_id FROM employee WHERE employee.id = ${id}`,
+    (err, res) => {
+        if (err) throw err;
+        lookUpDept(res[0].role_id, "-");
         let inputVal = [roleId, id];
         filterData(inputVal);
         connection.query(`UPDATE employee SET role_id = ? WHERE id = ?`, inputVal,

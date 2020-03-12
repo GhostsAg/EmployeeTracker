@@ -27,9 +27,8 @@ CREATE TABLE employee (
     , PRIMARY KEY (id)
 );
 
-INSERT INTO emp_role (title, salary, department)
-VALUES ("Junior Web Developer", 75,000, "IT");
-INSERT INTO department (dept_name) 
-VALUES ("IT");
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("John", "Smith", 1, 1); 
+CREATE TABLE capital (
+    id INT AUTO_INCREMENT NOT NULL
+    , expense INT NOT NULL
+    , PRIMARY KEY (id)
+);
